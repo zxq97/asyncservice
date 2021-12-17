@@ -14,6 +14,7 @@ const (
 	ArticleConfPath = "./conf/yaml/article.yaml"
 	ASyncConfPath   = "./conf/yaml/async.yaml"
 	CommentConfPath = "./conf/yaml/comment.yaml"
+	OnlineConfPath  = "./conf/yaml/online.yaml"
 	RemindConfPath  = "./conf/yaml/remind.yaml"
 	SocialConfPath  = "./conf/yaml/social.yaml"
 	UserConfPath    = "./conf/yaml/user.yaml"

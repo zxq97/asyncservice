@@ -3,6 +3,8 @@ package main
 import (
 	"asyncservice/client/article"
 	"asyncservice/client/kafka"
+	"asyncservice/client/online"
+	"asyncservice/client/remind"
 	"asyncservice/client/social"
 	"asyncservice/client/user"
 	"asyncservice/conf"
@@ -15,6 +17,7 @@ var (
 	asyncConf   *conf.Conf
 	articleConf *conf.Conf
 	commentConf *conf.Conf
+	onlineConf  *conf.Conf
 	remindConf  *conf.Conf
 	socialConf  *conf.Conf
 	userConf    *conf.Conf
@@ -34,6 +37,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	onlineConf, err = conf.LoadYaml(conf.OnlineConfPath)
+	if err != nil {
+		panic(err)
+	}
 	remindConf, err = conf.LoadYaml(conf.RemindConfPath)
 	if err != nil {
 		panic(err)
@@ -48,6 +55,8 @@ func main() {
 	}
 
 	article.InitClient(articleConf)
+	online.InitClient(onlineConf)
+	remind.InitClient(remindConf)
 	social.InitClient(socialConf)
 	user.InitClient(userConf)
 

@@ -8,6 +8,8 @@ const (
 	FollowTypePerson = 1
 	FollowTypeTopic  = 2
 
+	FollowCountLimit = 10000
+
 	GenderUndefined = 0
 	GenderBody      = 1
 	GenderGirl      = 2
