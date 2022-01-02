@@ -61,7 +61,7 @@ func main() {
 	user.InitClient(userConf)
 
 	concurrent.Go(func() {
-		consumer.InitConsumer(asyncConf.Kafka.Addr, kafka.TestTopic)
+		consumer.InitConsumer(asyncConf.Kafka.Addr, kafka.UserActionTopic)
 	})
 
 	_ = http.ListenAndServe(asyncConf.Grpc.Addr, nil)

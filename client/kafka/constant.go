@@ -1,9 +1,7 @@
 package kafka
 
 const (
-	TestTopic       = "test"
-	BasketTestTopic = "basket_test"
-	FollowTopic     = "follow"
+	UserActionTopic = "user_action"
 
 	EventPublish  = "publish"
 	EventFollow   = "follow"
