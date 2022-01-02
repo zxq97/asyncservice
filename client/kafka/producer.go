@@ -25,7 +25,7 @@ func InitClient(kafkaConf conf.KafkaConf) error {
 	kfkConf.Net.DialTimeout = DefaultDialTimeout
 	kfkConf.Net.ReadTimeout = DefaultReadTimeout
 	kfkConf.Net.WriteTimeout = DefaultWriteTimeout
-	producer, err := sarama.NewSyncProducer([]string{kafkaConf.Addr}, kfkConf)
+	producer, err := sarama.NewSyncProducer(kafkaConf.Addr, kfkConf)
 	if err != nil {
 		log.Printf("get producer err: %v", err)
 		return err
