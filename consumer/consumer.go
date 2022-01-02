@@ -5,30 +5,27 @@ import (
 	"asyncservice/consumer/article"
 	"asyncservice/consumer/social"
 	"encoding/json"
-	"fmt"
 	"github.com/Shopify/sarama"
 	"log"
 )
 
-func InitConsumer(broker, topic string) {
+func InitConsumer(broker []string, topic string) {
 	consumer, err := kafka.NewKafkaConsumer(broker)
 	defer consumer.Close()
-	partitionConsumer, err := consumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
+	partitions, err := consumer.Partitions(topic)
 	if err != nil {
 		return
 	}
-	defer partitionConsumer.Close()
 
-	for {
-		select {
-		case msg, ok := <-partitionConsumer.Messages():
-			if ok {
-				process(msg)
-			}
-		case err, ok := <-partitionConsumer.Errors():
-			if ok {
-				fmt.Println(err)
-			}
+	for _, p := range partitions {
+		partitionConsumer, err := consumer.ConsumePartition(topic, p, sarama.OffsetNewest)
+		if err != nil {
+			log.Printf("partitionconsumer err %v", err)
+			continue
+		}
+
+		for m := range partitionConsumer.Messages() {
+			process(m)
 		}
 	}
 }

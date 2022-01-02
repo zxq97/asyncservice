@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-func NewKafkaConsumer(broker string) (sarama.Consumer, error) {
-	consumer, err := sarama.NewConsumer([]string{broker}, nil)
+func NewKafkaConsumer(broker []string) (sarama.Consumer, error) {
+	consumer, err := sarama.NewConsumer(broker, nil)
 	if err != nil {
 		log.Println("consumer connect err", err)
 		return nil, err
