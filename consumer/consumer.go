@@ -4,9 +4,9 @@ import (
 	"asyncservice/client/kafka"
 	"asyncservice/consumer/article"
 	"asyncservice/consumer/social"
+	"asyncservice/global"
 	"encoding/json"
 	"github.com/Shopify/sarama"
-	"log"
 )
 
 func InitConsumer(broker []string, topic string) {
@@ -20,7 +20,7 @@ func InitConsumer(broker []string, topic string) {
 	for _, p := range partitions {
 		partitionConsumer, err := consumer.ConsumePartition(topic, p, sarama.OffsetNewest)
 		if err != nil {
-			log.Printf("partitionconsumer err %v", err)
+			global.ExcLog.Printf("partitionconsumer err %v", err)
 			continue
 		}
 
@@ -32,11 +32,11 @@ func InitConsumer(broker []string, topic string) {
 
 func process(message *sarama.ConsumerMessage) {
 	val := message.Value
-	log.Printf("ProcessComics: info, key %v value %v", string(message.Key), string(message.Value))
+	global.ExcLog.Printf("ProcessComics: info, key %v value %v", string(message.Key), string(message.Value))
 	event := new(kafka.KafkaMessage)
 	err := json.Unmarshal(val, event)
 	if err != nil {
-		log.Printf("process json unmarshal %v err %v", string(message.Value), err)
+		global.ExcLog.Printf("process json unmarshal %v err %v", string(message.Value), err)
 		return
 	}
 	switch event.Event {

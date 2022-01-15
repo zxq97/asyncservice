@@ -2,6 +2,7 @@ package main
 
 import (
 	"asyncservice/client/article"
+	"asyncservice/client/comment"
 	"asyncservice/client/kafka"
 	"asyncservice/client/online"
 	"asyncservice/client/remind"
@@ -9,6 +10,7 @@ import (
 	"asyncservice/client/user"
 	"asyncservice/conf"
 	"asyncservice/consumer"
+	"asyncservice/global"
 	"asyncservice/util/concurrent"
 	"net/http"
 )
@@ -54,7 +56,17 @@ func main() {
 		panic(err)
 	}
 
+	global.InfoLog, err = conf.InitLog(asyncConf.InfoLog.Path)
+	if err != nil {
+		panic(err)
+	}
+	global.ExcLog, err = conf.InitLog(asyncConf.ExcLog.Path)
+	if err != nil {
+		panic(err)
+	}
+
 	article.InitClient(articleConf)
+	comment.InitClient(commentConf)
 	online.InitClient(onlineConf)
 	remind.InitClient(remindConf)
 	social.InitClient(socialConf)

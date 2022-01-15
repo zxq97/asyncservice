@@ -2,10 +2,10 @@ package online
 
 import (
 	"asyncservice/conf"
+	"asyncservice/global"
 	"asyncservice/rpc/online/pb"
 	"context"
 	"github.com/micro/go-micro"
-	"log"
 )
 
 var (
@@ -25,7 +25,7 @@ func InitClient(config *conf.Conf) {
 func StartUp(ctx context.Context, uid int64) error {
 	_, err := client.StartUp(ctx, toOnlineRequest(uid))
 	if err != nil {
-		log.Printf("ctx %v StartUp uid %v err %v", ctx, uid, err)
+		global.ExcLog.Printf("ctx %v StartUp uid %v err %v", ctx, uid, err)
 	}
 	return err
 }
@@ -33,7 +33,7 @@ func StartUp(ctx context.Context, uid int64) error {
 func Shutdown(ctx context.Context, uid int64) error {
 	_, err := client.StartUp(ctx, toOnlineRequest(uid))
 	if err != nil {
-		log.Printf("ctx %v Shutdown uid %v err %v", ctx, uid, err)
+		global.ExcLog.Printf("ctx %v Shutdown uid %v err %v", ctx, uid, err)
 	}
 	return err
 }
@@ -41,7 +41,7 @@ func Shutdown(ctx context.Context, uid int64) error {
 func GetOnlineAll(ctx context.Context) ([]int64, int64, error) {
 	res, err := client.GetOnlineAll(ctx, &online_service.EmptyRequest{})
 	if err != nil {
-		log.Printf("ctx %v GetOnlineAll err %v", ctx, err)
+		global.ExcLog.Printf("ctx %v GetOnlineAll err %v", ctx, err)
 		return nil, 0, err
 	}
 	return res.Uids, res.Count, nil

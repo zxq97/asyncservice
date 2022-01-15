@@ -2,8 +2,8 @@ package kafka
 
 import (
 	"asyncservice/conf"
+	"asyncservice/global"
 	"github.com/Shopify/sarama"
-	"log"
 	"time"
 )
 
@@ -27,7 +27,7 @@ func InitClient(kafkaConf conf.KafkaConf) error {
 	kfkConf.Net.WriteTimeout = DefaultWriteTimeout
 	producer, err := sarama.NewSyncProducer(kafkaConf.Addr, kfkConf)
 	if err != nil {
-		log.Printf("get producer err: %v", err)
+		global.ExcLog.Printf("get producer err: %v", err)
 		return err
 	}
 	client = &producer
@@ -41,9 +41,9 @@ func SendMessage(topic string, key []byte, data []byte) error {
 		Value: sarama.ByteEncoder(data),
 	})
 	if err != nil {
-		log.Printf("kfk.sendmessage: key: %s data: %s, partition: %d, offset: %d, err: %s", key, data, partition, offset, err)
+		global.ExcLog.Printf("kfk.sendmessage: key: %s data: %s, partition: %d, offset: %d, err: %s", key, data, partition, offset, err)
 		return err
 	}
-	log.Printf("SendMessage: info, topic=%v key=%v data=%v p=%v offset=%v", topic, string(key), string(data), partition, offset)
+	global.ExcLog.Printf("SendMessage: info, topic=%v key=%v data=%v p=%v offset=%v", topic, string(key), string(data), partition, offset)
 	return nil
 }
