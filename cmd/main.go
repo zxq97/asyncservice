@@ -12,7 +12,9 @@ import (
 	"asyncservice/consumer"
 	"asyncservice/global"
 	"asyncservice/util/concurrent"
-	"net/http"
+	"github.com/micro/go-micro/registry"
+	"github.com/micro/go-micro/registry/etcd"
+	"github.com/micro/go-micro/web"
 )
 
 var (
@@ -76,5 +78,15 @@ func main() {
 		consumer.InitConsumer(asyncConf.Kafka.Addr, kafka.UserActionTopic)
 	})
 
-	_ = http.ListenAndServe(asyncConf.Grpc.Addr, nil)
+	etcdRegistry := etcd.NewRegistry(func(options *registry.Options) {
+		options.Addrs = asyncConf.Etcd.Addr
+	})
+	server := web.NewService(
+		web.Name(asyncConf.Grpc.Name),
+		web.Address(asyncConf.Grpc.Addr),
+		web.Registry(etcdRegistry),
+	)
+
+	_ = server.Init()
+	_ = server.Run()
 }
