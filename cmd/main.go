@@ -25,6 +25,7 @@ var (
 	remindConf  *conf.Conf
 	socialConf  *conf.Conf
 	userConf    *conf.Conf
+	feedConf    *conf.Conf
 	err         error
 )
 
@@ -57,12 +58,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	global.InfoLog, err = conf.InitLog(asyncConf.InfoLog.Path)
+	feedConf, err = conf.LoadYaml(conf.FeedConfPath)
 	if err != nil {
 		panic(err)
 	}
-	global.ExcLog, err = conf.InitLog(asyncConf.ExcLog.Path)
+
+	global.InfoLog, err = conf.InitLog(asyncConf.LogPath.Info)
+	if err != nil {
+		panic(err)
+	}
+	global.ExcLog, err = conf.InitLog(asyncConf.LogPath.Exc)
+	if err != nil {
+		panic(err)
+	}
+	global.DebugLog, err = conf.InitLog(articleConf.LogPath.Debug)
 	if err != nil {
 		panic(err)
 	}

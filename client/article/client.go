@@ -4,7 +4,6 @@ import (
 	"asyncservice/conf"
 	"asyncservice/global"
 	"asyncservice/rpc/article/pb"
-	"asyncservice/util/constant"
 	"context"
 	"github.com/micro/go-micro"
 )
@@ -85,25 +84,19 @@ func DeleteArticle(ctx context.Context, articleID int64) error {
 	return err
 }
 
-func PushFollowFeed(ctx context.Context, uid, articleID int64, uids []int64) error {
-	stream, err := client.PushFollowFeed(ctx)
-	defer stream.Close()
+func PushInBox(ctx context.Context, uid, articleID int64) error {
+	_, err := client.PushInBox(ctx, toPushInBoxRequest(uid, articleID))
 	if err != nil {
-		global.ExcLog.Printf("ctx %v PushFollowFeed uid %v articleid %v uids %v err %v", ctx, uids, articleID, uids, err)
-		return err
+		global.ExcLog.Printf("ctx %v PushInBox uid %v articleid %v err %v", ctx, uid, articleID, err)
 	}
-	for i := 0; i < len(uids); i += constant.BatchSize {
-		left := i
-		right := i + constant.BatchSize
-		if right > len(uids) {
-			right = len(uids)
-		}
-		tus := uids[left:right]
-		err = stream.Send(toPushFollowFeedRequest(uid, articleID, tus))
-		if err != nil {
-			global.ExcLog.Printf("ctx %v PushFollowFeed streamsend uid %v articleid %v uids %v err %v", ctx, uids, articleID, uids, err)
-			return err
-		}
+	return err
+}
+
+func GetInBox(ctx context.Context, uid, cursor, offset int64) ([]int64, int64, bool, error) {
+	res, err := client.GetInBox(ctx, toGetInBoxRequest(uid, cursor, offset))
+	if err != nil {
+		global.ExcLog.Printf("ctx %v GetInBox uid %v cursor %v offset %v err %v", ctx, uid, cursor, offset, err)
+		return nil, 0, false, err
 	}
-	return nil
+	return res.ArticleIds, res.NextCursor, res.HasMore, nil
 }

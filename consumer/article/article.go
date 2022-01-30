@@ -1,7 +1,6 @@
 package article
 
 import (
-	"asyncservice/client/article"
 	"asyncservice/client/kafka"
 	"asyncservice/client/online"
 	"asyncservice/client/social"
@@ -11,7 +10,7 @@ import (
 
 func PublishArticle(publish *kafka.KafkaMessage) {
 	uid := publish.Info.UID
-	articleID := publish.Info.ArticleID
+	//articleID := publish.Info.ArticleID
 	baseCtx := context.Background()
 	ctx, cancel := context.WithTimeout(baseCtx, constant.RPCTimeOut)
 	defer cancel()
@@ -30,9 +29,9 @@ func PublishArticle(publish *kafka.KafkaMessage) {
 		uids = union(uids, onlineUIDs)
 	}
 
-	ctx, cancel = context.WithTimeout(baseCtx, constant.RPCTimeOut)
-	defer cancel()
-	_ = article.PushFollowFeed(ctx, uid, articleID, uids)
+	//ctx, cancel = context.WithTimeout(baseCtx, constant.RPCTimeOut)
+	//defer cancel()
+	//_ = article.PushFollowFeed(ctx, uid, articleID, uids)
 }
 
 func union(a, b []int64) []int64 {
