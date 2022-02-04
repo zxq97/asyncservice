@@ -5,6 +5,8 @@ import (
 	"asyncservice/consumer/article"
 	"asyncservice/consumer/social"
 	"asyncservice/global"
+	"asyncservice/util/concurrent"
+	"context"
 	"encoding/json"
 	"github.com/Shopify/sarama"
 )
@@ -17,6 +19,8 @@ func InitConsumer(broker []string, topic string) {
 		return
 	}
 
+	wg := concurrent.NewWaitGroup()
+
 	for _, p := range partitions {
 		partitionConsumer, err := consumer.ConsumePartition(topic, p, sarama.OffsetNewest)
 		if err != nil {
@@ -24,10 +28,13 @@ func InitConsumer(broker []string, topic string) {
 			continue
 		}
 
-		for m := range partitionConsumer.Messages() {
-			process(m)
-		}
+		wg.Run(func() {
+			for m := range partitionConsumer.Messages() {
+				process(m)
+			}
+		})
 	}
+	wg.Wait()
 }
 
 func process(message *sarama.ConsumerMessage) {
@@ -39,13 +46,15 @@ func process(message *sarama.ConsumerMessage) {
 		global.ExcLog.Printf("process json unmarshal %v err %v", string(message.Value), err)
 		return
 	}
+	// fixme context需要换
+	ctx := context.TODO()
 	switch event.Event {
 	case kafka.EventPublish:
-		article.PublishArticle(event)
+		article.PublishArticle(ctx, event)
 	case kafka.EventFollow:
-		social.Follow(event)
+		social.Follow(ctx, event)
 	case kafka.EventUnfollow:
-		social.Unfollow(event)
+		social.Unfollow(ctx, event)
 	}
 
 }

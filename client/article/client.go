@@ -83,20 +83,3 @@ func DeleteArticle(ctx context.Context, articleID int64) error {
 	}
 	return err
 }
-
-func PushInBox(ctx context.Context, uid, articleID int64) error {
-	_, err := client.PushInBox(ctx, toPushInBoxRequest(uid, articleID))
-	if err != nil {
-		global.ExcLog.Printf("ctx %v PushInBox uid %v articleid %v err %v", ctx, uid, articleID, err)
-	}
-	return err
-}
-
-func GetInBox(ctx context.Context, uid, cursor, offset int64) ([]int64, int64, bool, error) {
-	res, err := client.GetInBox(ctx, toGetInBoxRequest(uid, cursor, offset))
-	if err != nil {
-		global.ExcLog.Printf("ctx %v GetInBox uid %v cursor %v offset %v err %v", ctx, uid, cursor, offset, err)
-		return nil, 0, false, err
-	}
-	return res.ArticleIds, res.NextCursor, res.HasMore, nil
-}

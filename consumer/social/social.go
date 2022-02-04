@@ -1,19 +1,26 @@
 package social
 
 import (
+	"asyncservice/client/feed"
 	"asyncservice/client/kafka"
-	"asyncservice/client/user"
 	"asyncservice/global"
 	"context"
 )
 
-func Follow(follow *kafka.KafkaMessage) {
+func Follow(ctx context.Context, follow *kafka.KafkaMessage) {
 	uid := follow.Info.UID
-	touid := follow.Info.ToUID
-	userMap, err := user.GetBatchUserinfo(context.Background(), []int64{uid, touid})
-	global.InfoLog.Printf("uid %v touid %v usermap %v err %v", uid, touid, userMap, err)
+	toUID := follow.Info.ToUID
+	err := feed.FollowAfterFeed(ctx, uid, toUID)
+	if err != nil {
+		global.ExcLog.Printf("ctx %v Follow uid %v touid %v err %v", ctx, uid, toUID, err)
+	}
 }
 
-func Unfollow(unfollow *kafka.KafkaMessage) {
-
+func Unfollow(ctx context.Context, unfollow *kafka.KafkaMessage) {
+	uid := unfollow.Info.UID
+	toUID := unfollow.Info.ToUID
+	err := feed.UnfollowAfterFeed(ctx, uid, toUID)
+	if err != nil {
+		global.ExcLog.Printf("ctx %v Unfollow uid %v touid %v err %v", ctx, uid, toUID, err)
+	}
 }

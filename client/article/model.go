@@ -59,21 +59,6 @@ func toTopicBatchRequest(topicIDs []int64) *article_service.TopicBatchRequest {
 	}
 }
 
-func toPushInBoxRequest(uid, articleID int64) *article_service.PushInBoxRequest {
-	return &article_service.PushInBoxRequest{
-		Uid:       uid,
-		ArticleId: articleID,
-	}
-}
-
-func toGetInBoxRequest(uid, cursor, offset int64) *article_service.GetInBoxRequest {
-	return &article_service.GetInBoxRequest{
-		Uid:    uid,
-		Cursor: cursor,
-		Offset: offset,
-	}
-}
-
 func toArticle(article *article_service.ArticleInfo) *Article {
 	return &Article{
 		ArticleID:   article.ArticleId,

@@ -3,6 +3,7 @@ package main
 import (
 	"asyncservice/client/article"
 	"asyncservice/client/comment"
+	"asyncservice/client/feed"
 	"asyncservice/client/kafka"
 	"asyncservice/client/online"
 	"asyncservice/client/remind"
@@ -42,6 +43,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	feedConf, err = conf.LoadYaml(conf.FeedConfPath)
+	if err != nil {
+		panic(err)
+	}
 	onlineConf, err = conf.LoadYaml(conf.OnlineConfPath)
 	if err != nil {
 		panic(err)
@@ -55,10 +60,6 @@ func main() {
 		panic(err)
 	}
 	userConf, err = conf.LoadYaml(conf.UserConfPath)
-	if err != nil {
-		panic(err)
-	}
-	feedConf, err = conf.LoadYaml(conf.FeedConfPath)
 	if err != nil {
 		panic(err)
 	}
@@ -78,6 +79,7 @@ func main() {
 
 	article.InitClient(articleConf)
 	comment.InitClient(commentConf)
+	feed.InitClient(feedConf)
 	online.InitClient(onlineConf)
 	remind.InitClient(remindConf)
 	social.InitClient(socialConf)
